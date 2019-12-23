@@ -1,0 +1,41 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "baseUrl": ".",
+        "paths": {
+            "c/accomplishment": [
+                "accomplishment/accomplishment.js"
+            ],
+            "c/accomplishmentItem": [
+                "accomplishmentItem/accomplishmentItem.js"
+            ],
+            "c/goal": [
+                "goal/goal.js"
+            ],
+            "c/goalItem": [
+                "goalItem/goalItem.js"
+            ],
+            "c/recentAccounts": [
+                "recentAccounts/recentAccounts.js"
+            ],
+            "c/weatherDataLWC": [
+                "weatherDataLWC/weatherDataLWC.js"
+            ],
+            "c/yearlyReview": [
+                "yearlyReview/yearlyReview.js"
+            ],
+            "c/yearlyReviewModule": [
+                "yearlyReviewModule/yearlyReviewModule.js"
+            ]
+        }
+    },
+    "include": [
+        "**/*",
+        "../../../../.sfdx/typings/lwc/**/*.d.ts"
+    ],
+    "typeAcquisition": {
+        "include": [
+            "jest"
+        ]
+    }
+}

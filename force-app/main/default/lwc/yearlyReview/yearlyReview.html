@@ -1,0 +1,14 @@
+<template>
+    <lightning-card title={userName} icon-name="custom:custom101">
+        <div class="slds-p-left_small">
+            <template if:true={username}>
+                <div>
+                    <c-goal goal-status={getPicklistValues} user-name={username} userid={userId}></c-goal>
+                </div>
+                <div>
+                    <c-accomplishment user-name={username} userid={userId}></c-accomplishment>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

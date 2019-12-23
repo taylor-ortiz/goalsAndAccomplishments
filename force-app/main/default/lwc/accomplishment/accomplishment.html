@@ -1,0 +1,20 @@
+<template>
+    <lightning-card title={customMessage} icon-name="standard:reward">
+        <div class="slds-p-left_x-large">
+            <template if:true={accomplishments}>
+                <template iterator:it={accomplishments}>
+                    <div key={it.value.id}>
+                        <c-accomplishment-item incomingaccomplishment={it.value.goal} incomingaccomplishmentstatus="Completed" onaccomplish={rowSelected} index={it.index} accompsalesforceid={it.value.accomplishmentSFId} onrevert={handleRevert}></c-accomplishment-item>
+                    </div>
+                </template>
+            </template>
+            <template if:true={accomplishmentSize}>
+                    <lightning-layout>
+                        <lightning-layout-item>
+                            You have no accomplishments yet...
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </template>
+        </div>
+    </lightning-card>
+</template>

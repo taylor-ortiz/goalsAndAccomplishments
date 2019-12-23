@@ -1,0 +1,9 @@
+.card-style {
+    background-color: lightgray;
+    border-radius: 5px;
+}
+
+.slds-card__header {
+    background-color: lightgray;
+    border-radius: 5px;
+}

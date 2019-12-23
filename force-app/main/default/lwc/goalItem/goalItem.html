@@ -1,0 +1,48 @@
+<template>
+    <lightning-layout>
+        <lightning-layout-item>
+            <lightning-icon variant="error"
+                icon-name="utility:clear"
+                class="pointer slds-p-top_large slds-p-right_small"
+                size="small" 
+                onclick={removeGoal}
+                data-index={index}
+                alternative-text="Remove Goal"></lightning-icon>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <lightning-combobox
+                name="status"
+                label="Status"
+                value={statusValue}
+                placeholder="Select Progress"
+                options={status}
+                onchange={handleStatusChange} 
+                data-index={index}
+                ></lightning-combobox>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-left_x-small" size="4" medium-device-size="5">
+            <lightning-input type="text" value={goalValue} label="Goal" name="goal-input" data-index={index} onchange={handleChange}></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="slds-p-left_x-small slds-p-top_large">
+            <lightning-input type="toggle"
+                    value={isAccomplished}
+                    label="Accomplished?"
+                    name="accomp-input"
+                    data-index={index}
+                    onchange={handleAccomplished}
+                    message-toggle-active=""
+                    message-toggle-inactive="">
+                    </lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item>
+            <div class="pointer slds-p-top_large slds-p-left_small">
+                <lightning-icon variant="success"
+                                icon-name="utility:success"
+                                class="slds-p-left_x-small"
+                                size="small" 
+                                onclick={addGoal}
+                                alternative-text="Add Goal"></lightning-icon>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>
