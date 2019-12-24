@@ -1,7 +1,9 @@
 import { LightningElement, api, track } from 'lwc';
-import { deleteRecord } from 'lightning/uiRecordApi';
+import { deleteRecord, updateRecord } from 'lightning/uiRecordApi';
 import { configureCustomMessage, goalObj, handleToastEvent, fire, register } from 'c/yearlyReviewModule';
 import getGoals from '@salesforce/apex/yearlyReview.getGoals';
+import CONVERTED_FIELD from '@salesforce/schema/Goal__c.Converted__c';
+import GOAL_ID_FIELD from '@salesforce/schema/Goal__c.Id';
 
 export default class Goal extends LightningElement {
     @api goalStatus;
@@ -15,16 +17,14 @@ export default class Goal extends LightningElement {
 
     connectedCallback() {
         getGoals({userId: this.userid}).then(data => {
-            console.log('this is the data? ', data);
             if (data) {
                 this.initialized = true;
                 this.itemSubmitted = true;
                 this.goals = data.map( (goal, index) => {
-                    let goalFunction = new goalObj(index, index, null, goal.Id, goal.Goal__c, goal.Status__c, true, false, goal.Converted__c, null);
+                    let goalFunction = new goalObj(index, index, null, goal.Id, goal.Goal__c, goal.Status__c, goal.Submitted__c, false, goal.Converted__c, null);
                     return Object.create(goalFunction);
                 })
             }
-            console.log('this is goals??? ', this.goals);
         }).catch(err => console.log(err));
 
         this.data='callback' ; 
@@ -33,9 +33,8 @@ export default class Goal extends LightningElement {
     }
 
     eventFired(event){
-        console.log("this is actually happening for accomplishments");
-        console.log('what is the event? ', event.detail);
         this.goals.push(event.detail);
+        this.updateGoal(event.detail.salesforceId, false);
     }
 
     @api
@@ -60,18 +59,15 @@ export default class Goal extends LightningElement {
                                                 'pester'));
         } else {
             this.initialized = true;
-            console.log('this should be getting into here');
             let index = this.goals.length === 0 ? 0 : this.goals.length;
-            let goalFunction = new goalObj(index, index, null, null, null, null, null, false, false, null);
+            let goalFunction = new goalObj(index, index, null, null, null, null, false, false, false, null);
             let goalObject = Object.create(goalFunction);
-            console.log('what is the goal object on add? ', goalObject);
             this.goals.push(goalObject);
             this.itemSubmitted = goalObject.submitted;
         }
     }
 
     get goalsSize() {
-        console.log('what is the size of the goals? ', this.goals.length);
         if (this.goals.length > 0) {
             return true
         }
@@ -88,7 +84,6 @@ export default class Goal extends LightningElement {
 
     rowSelected(event) {
         const newGoalObject = event.detail;
-        console.log('what  is the new goal object? ', this.goals[newGoalObject.id]);
         if (newGoalObject) {
             if (this.goals[newGoalObject.id] !== 'undefined') {
                 this.goals[newGoalObject.goalIndex].goalIndex = newGoalObject.goalIndex;
@@ -102,18 +97,15 @@ export default class Goal extends LightningElement {
                 this.itemSubmitted = newGoalObject.submitted;
             }
         }
-        console.log('what are the goals? ', this.goals.forEach(goal => {console.log(goal.id)}));
     }
 
     removeRow(event) {
         let isRemoval = event.detail.removal;
-        console.log('is removal? ', isRemoval);
-        let isAccomplished = event.detail.accomplished;
-        console.log('is accomplished? ', isAccomplished);
+        let isConverted = event.detail.converted;
         if (isRemoval) {
-            if (this.goals[event.detail.index].salesforceId) {
+            if (event.detail.goal.salesforceId) {
                 // function that serves as data base removal if an id is present
-                deleteRecord(this.goals[event.detail.index].salesforceId).then(() => {
+                deleteRecord(event.detail.goal.salesforceId).then(() => {
                     this.dispatchEvent(handleToastEvent('Goal Removed!',
                                                         'Your goal has successfully been removed!',
                                                         'success',
@@ -121,19 +113,16 @@ export default class Goal extends LightningElement {
                 })
             }
             this.removeIndexFromArray(event.detail.index);
-        } else if (isAccomplished) {
-            event.preventDefault();
-            console.log("getting in here for accomplished");
-            console.log("what are the goals before the event? ", this.goals[event.detail.index]);
-            fire('accomplish', {detail: this.goals[event.detail.index]});
-
+        } else if (isConverted) {
+            event.preventDefault();          
+            fire('accomplish', {detail: event.detail.goal});
+            this.updateGoal(event.detail.goal.salesforceId, true);
             this.removeIndexFromArray(event.detail.index);
         }
     }
 
     removeIndexFromArray(row) {
         this.goals.splice(row, 1);
-        console.log('what are the goals after removal? ', this.goals);
 
         // happens regardless of removal or accomplishment 
         this.goals.forEach(this.resetIndexAndIdAfterRemoval);
@@ -146,5 +135,13 @@ export default class Goal extends LightningElement {
 
     resetIndexAndIdAfterRemoval(item, index, arr) {
         arr[index].goalIndex = index;
+    }
+
+    updateGoal(Id, converted) {
+        const fields = {};
+        fields[GOAL_ID_FIELD.fieldApiName] = Id;
+        fields[CONVERTED_FIELD.fieldApiName] = converted;
+        const recordInput = { fields };
+        updateRecord(recordInput);
     }
 }

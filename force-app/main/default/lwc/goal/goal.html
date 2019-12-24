@@ -3,9 +3,9 @@
         <div class="slds-p-left_x-large">
             <template if:true={initialized}>
                 <template if:true={goalsSize}>
-                    <template iterator:it={goals}>
-                        <div key={it.value.id}>
-                            <c-goal-item status={goalStatus} index={it.value.goalIndex} salesforceid={it.value.salesforceId} incomingstatus={it.value.status} incominggoalvalue={it.value.goal} submitted={submitted} accomplished={it.value.submitted} onselected={rowSelected} onremove={removeRow}></c-goal-item>
+                    <template for:each={goals} for:item="goal" for:index="index">
+                        <div key={goal.id}>
+                            <c-goal-item status={goalStatus} goal={goal} index={index} salesforceid={goal.salesforceId} incomingstatus={goal.status} incominggoalvalue={goal.goal} submitted={goal.submitted} accomplished={goal.submitted} onselected={rowSelected} onremove={removeRow}></c-goal-item>
                         </div>
                     </template>
                 </template>

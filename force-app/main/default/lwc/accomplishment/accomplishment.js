@@ -12,24 +12,18 @@ export default class Accomplishment extends LightningElement {
     initialized;
 
     eventFired(event){
-        console.log("this is actually happening");
         event.detail.accomplishIndex = this.accomplishments.length;
-        console.log("what is event detail? ", event.detail);
         this.accomplishments.push(event.detail);
-        
-        console.log("what are accomplishments? ", this.accomplishments[0].salesforceId);
     }
     connectedCallback(){
 
         getAccomplishments({userId: this.userid}).then(data => {
-            console.log('this is the accomp data? ', data);
             if (data) {
                 this.accomplishments = data.map( (accomplish, index) => {
                     let goalFunction = new goalObj(index, null, index, null, accomplish.Accomplishment__c, 'Completed', true, false, accomplish.Goal_Accomplished__c, accomplish.Id);
                     return Object.create(goalFunction);
                 })
             }
-            console.log('this is accomplishments??? ', this.accomplishments);
         }).catch(err => console.log(err));
 
         this.data='callback' ; 
@@ -59,10 +53,8 @@ export default class Accomplishment extends LightningElement {
     }
 
     handleRevert(event) {
-        console.log('what is event detail? ', event.detail.index);
-
         if (this.accomplishments[event.detail.index] !== 'undefined') {
-            fire('revert', {detail: this.accomplishments[event.detail.index]});
+            fire('revert', {detail: event.detail.accomplishment});
             this.removeIndexFromArray(event.detail.index);
         }
     }

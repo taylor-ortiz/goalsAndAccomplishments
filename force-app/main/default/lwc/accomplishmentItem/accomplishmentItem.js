@@ -1,6 +1,5 @@
 import { LightningElement, api, track } from 'lwc';
-import { createRecord } from 'lightning/uiRecordApi';
-import { updateRecord } from 'lightning/uiRecordApi';
+import { createRecord, updateRecord } from 'lightning/uiRecordApi';
 import ACCOMPLISH_OBJECT from '@salesforce/schema/Accomplishment__c';
 import ACCOMPLISH_TEXT_FIELD from '@salesforce/schema/Accomplishment__c.Accomplishment__c';
 import GOAL_ACCOMPLISHED_FIELD from '@salesforce/schema/Accomplishment__c.Goal_Accomplished__c';
@@ -12,17 +11,16 @@ export default class AccomplishmentItem extends LightningElement {
     @api incomingaccomplishmentstatus;
     @api accompsalesforceid;
     @api index;
+    @api accomplishment;
     @track accomplishmentValue;
     @track accomplishmentStatus;
     async connectedCallback() {
         this.accomplishmentValue = this.incomingaccomplishment;
         this.accomplishmentStatus = this.incomingaccomplishmentstatus;
-        console.log('what is sf id? ', this.accompsalesforceid);
-        if (!this.accompsalesforceid) {
+        if (this.accomplishment.accomplishmentSFId === null) {
             let accomplishmentId = await this.createGoal(this.accomplishmentValue, true);
-            console.log('what is the accomplishment id? ', accomplishmentId);
             if (accomplishmentId) {
-                this.accompsalesforceid = accomplishmentId;
+                this.accomplishment.accomplishmentSFId = accomplishmentId;
             }
         }
     }
@@ -36,7 +34,6 @@ export default class AccomplishmentItem extends LightningElement {
             const recordInput = { apiName: ACCOMPLISH_OBJECT.objectApiName, fields};
             createRecord(recordInput).then(accomplishment => {
                 if (accomplishment) {
-                    console.log('what is the value of goal? ', accomplishment);
                     this.dispatchEvent(
                         handleToastEvent('Congratulations on your Accomplishment!',
                                                     'Awesome job and way to accomplish your goals!!',
@@ -64,13 +61,26 @@ export default class AccomplishmentItem extends LightningElement {
     }
 
     handleMoveBackToGoal(event) {
+
         let currIndex = event.target.dataset.index;
-            event.preventDefault();
+        event.preventDefault();
 
-            // Creates the event with the contact ID data.
-            const selectedEvent = new CustomEvent('revert', { detail: {index: currIndex, reverted: true}});
+        //this.accomplishment.converted = false;
 
-            // Dispatches the event.
-            this.dispatchEvent(selectedEvent);
+        // Creates the event with the contact ID data.
+        const selectedEvent = new CustomEvent('revert', { detail: {index: currIndex, reverted: true, accomplishment: this.accomplishment}});
+
+        // Dispatches the event.
+        this.dispatchEvent(selectedEvent);
+
+        this.updateAccomplishment(this.accomplishment.accomplishmentSFId, false);
+    }
+
+    updateAccomplishment(Id, accomplished) {
+        const fields = {};
+        fields[ACCOMPLISHMENT_ID_FIELD.fieldApiName] = Id;
+        fields[GOAL_ACCOMPLISHED_FIELD.fieldApiName] = accomplished;
+        const recordInput = { fields };
+        updateRecord(recordInput);
     }
 }

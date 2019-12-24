@@ -52,7 +52,7 @@ const configureCustomMessage = (userName, isAccomplishment) => {
     }
 }
 
-var goalObj = function(id, goalIndex, accomplishIndex, salesforceId, goal, status, submitted, removal, accomplished, accomplishmentSFId) {
+var goalObj = function(id, goalIndex, accomplishIndex, salesforceId, goal, status, submitted, removal, converted, accomplishmentSFId) {
         this.id = id;
         this.goalIndex = goalIndex;
         this.accomplishIndex = accomplishIndex;
@@ -61,7 +61,7 @@ var goalObj = function(id, goalIndex, accomplishIndex, salesforceId, goal, statu
         this.status = status;
         this.submitted = submitted;
         this.removal = removal;
-        this.accomplished = accomplished;
+        this.converted = converted;
         this.accomplishmentSFId = accomplishmentSFId;
 }
 
@@ -81,6 +81,7 @@ const successMessages = () => {
                  'Sweet! Your boss is going to be so impressed!'];
     return arr[Math.floor(Math.random() * arr.length)];
 }
+
 
 export { configureCustomMessage, goalObj, handleToastEvent, successMessages, register, unregister, fire }
 

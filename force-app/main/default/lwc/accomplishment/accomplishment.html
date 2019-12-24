@@ -2,9 +2,9 @@
     <lightning-card title={customMessage} icon-name="standard:reward">
         <div class="slds-p-left_x-large">
             <template if:true={accomplishments}>
-                <template iterator:it={accomplishments}>
-                    <div key={it.value.id}>
-                        <c-accomplishment-item incomingaccomplishment={it.value.goal} incomingaccomplishmentstatus="Completed" onaccomplish={rowSelected} index={it.index} accompsalesforceid={it.value.accomplishmentSFId} onrevert={handleRevert}></c-accomplishment-item>
+                <template for:each={accomplishments} for:item="accomplishment" for:index="index">
+                    <div key={accomplishment.id}>
+                        <c-accomplishment-item accomplishment={accomplishment} incomingaccomplishment={accomplishment.goal} incomingaccomplishmentstatus="Completed" onaccomplish={rowSelected} index={index} accompsalesforceid={accomplishment.accomplishmentSFId} onrevert={handleRevert}></c-accomplishment-item>
                     </div>
                 </template>
             </template>
