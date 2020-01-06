@@ -1,0 +1,9 @@
+.lightning-pill {
+    color: rgb(62, 62, 60);
+    font-size: .75rem;
+}
+
+.distribution {
+    display: inline-block;
+    padding-left: 25px;
+}

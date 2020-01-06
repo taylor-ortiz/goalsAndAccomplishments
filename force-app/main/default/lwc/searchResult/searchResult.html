@@ -1,0 +1,20 @@
+<template>
+    <li role="presentation" class="slds-listbox__item">
+        <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta"
+             role="option"
+             onclick={handleDonorSelection}>
+            <span class="slds-media__figure slds-listbox__option-icon">
+                <span class="slds-icon_container slds-icon-standard-account">
+                    <lightning-icon icon-name="standard:contact" size="medium"></lightning-icon>
+                </span>
+            </span>
+            <span class="slds-media__body">
+                <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                <span>
+                    <mark>{name}</mark></span>
+                </span>
+                <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">{location}</span>
+            </span>
+        </div>
+    </li>
+</template>

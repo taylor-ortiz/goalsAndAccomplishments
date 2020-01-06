@@ -1,0 +1,116 @@
+<template>
+    <template if:true={first}>
+        <div class="lightning-pill slds-p-bottom_medium">
+            <p class="lightning-pill"><b>Donors Added:</b></p>
+            <template if:true={itemSize}>
+                <lightning-pill-container items={items} onitemremove={handleItemRemove}></lightning-pill-container>
+            </template>
+            <template if:false={itemSize}>
+                <p class="lightning-pill slds-p-top_x-small">No Donors Added...</p>
+            </template>
+        </div>
+        <lightning-radio-group name="radioGroup" label="Any existing donors?" options={options} value={radioValue}
+            type="radio" onchange={renderSearchBlock} class='slds-p-bottom_small'></lightning-radio-group>
+        <template if:true={renderSearch}>
+            <div class="slds-form-element slds-p-top_small">
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click" aria-expanded="false"
+                            aria-haspopup="listbox" role="combobox">
+                            <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right"
+                                role="none">
+                                <lightning-input type="search" label="Search For Donors:" onchange={handleInput}
+                                    value={searchKey}>
+                                </lightning-input>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <template if:true={donorsSize}>
+                    <div class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid" role="listbox" style="overflow: scroll">
+                        <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                            <template for:each={donors} for:item="donor">
+                                <div key={donor.Id}>
+                                    <c-search-result donor={donor} onselected={handleSelection}></c-search-result>
+                                </div>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template if:false={renderSearch}>
+            <lightning-input label="First Name" onchange={handleNewRecordInput} class="slds-m-bottom_x-small" data-name="first" value={firstName}>
+            </lightning-input>
+            <lightning-input label="Last Name" onchange={handleNewRecordInput} class="slds-m-bottom_x-small" data-name="last" value={lastName}>
+            </lightning-input>
+            <lightning-input label="Location" onchange={handleNewRecordInput} class="slds-m-bottom_x-small" data-name="location" field-level-help="Ex. Denver, CO or Denver CO" value={location}>
+            </lightning-input>
+            <lightning-button label="Create Donor" variant="brand" onclick={createDonor} disabled={qualifyDonorCreation}></lightning-button>
+        </template>
+    </template>
+    <template if:true={second}>
+        <div class="lightning-pill slds-p-bottom_medium">
+            <p class="lightning-pill"><b>Donation Distrubtion</b></p>
+            <template for:each={items} for:item="item" for:index="index">
+                <span key={item.donorId}>
+                    <c-donation-distrubution name={item.name} donation-amount={item.donationAmount} item-index={index}  ondonationchange={handleItemDonationAmount}></c-donation-distrubution>
+                </span>
+            </template>
+        </div>
+    </template>
+    <template if:true={third}>
+        <div class="lightning-pill slds-p-bottom_medium">
+            <lightning-radio-group name="sectorGroup" label="Which sector will the donation be given?" options={sectorOptions} value={sectorValue}
+            type="radio" onchange={handleRadioQuestionInput} class='slds-p-bottom_small'></lightning-radio-group>
+        </div>
+        <div class="lightning-pill slds-p-bottom_medium">
+            <lightning-radio-group name="marketingGroup" label="How did they hear about us?" options={marketingOptions} value={marketingValue}
+            type="radio" onchange={handleRadioQuestionInput} class='slds-p-bottom_small'></lightning-radio-group>
+        </div>
+    </template>
+    <template if:true={fourth}>
+        <div class="lightning-pill">
+            <b>Donation Summary:</b>
+        </div>
+        <lightning-layout class="slds-p-top_medium">
+            <lightning-layout-item size="6">
+                <lightning-input type="number" name="amount" label="Total Donation Amount" value={donationTotal} formatter="currency" readonly></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="6">
+                <lightning-input type="number" name="amount" label="Donation Goal" value={opp.fields.Donation_Goal__c.value} formatter="currency" readonly></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-p-top_medium slds-p-bottom_medium">
+            <lightning-progress-bar value={donationProgress} size="large" variant="circular"></lightning-progress-bar>
+        </div>
+        <div>
+            <div class="slds-p-top_medium">
+                <lightning-input type="text" name="sector" label="Which sector will the donation be given?" value={sectorValue} readonly></lightning-input>
+            </div>
+            <div class="slds-p-top_medium">
+                <lightning-input type="text" name="market" label="How did they hear about us?" value={marketingValue} readonly></lightning-input>
+            </div>
+            <div class="slds-p-top_medium">
+                <p>Your donation coordinator will be notified of the assessment results. Thank you!</p>
+            </div>
+        </div>
+    </template>
+    <div class="slds-p-top_large">
+        <lightning-button label="Back" name="Back" variant="brand" disabled={enablePrevious} onclick={handlePrevious} class="slds-p-right_small"></lightning-button>
+        <template if:false={enabledCompleteAssessment}>
+            <lightning-button label="Next" name="Next" variant="brand" disabled={enableNext} onclick={handleNext}></lightning-button>
+        </template>
+        <template if:true={enabledCompleteAssessment}>
+            <lightning-button label="Complete Assessment" name="Complete Assessment" variant="brand" onclick={creationDonations}></lightning-button>
+        </template>
+    </div>
+    <div class="slds-p-top_xx-large">
+        <lightning-progress-indicator current-step={progress} type="base" variant="base">
+            <lightning-progress-step label="Step 1" value="0"></lightning-progress-step>
+            <lightning-progress-step label="Step 2" value="1"></lightning-progress-step>
+            <lightning-progress-step label="Step 3" value="2"></lightning-progress-step>
+            <lightning-progress-step label="Step 4" value="3"></lightning-progress-step>
+        </lightning-progress-indicator>
+    </div>
+</template>

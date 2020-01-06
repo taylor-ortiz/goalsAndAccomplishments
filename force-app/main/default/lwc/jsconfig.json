@@ -15,8 +15,14 @@
             "c/goalItem": [
                 "goalItem/goalItem.js"
             ],
+            "c/lwcQuickActionWizard": [
+                "lwcQuickActionWizard/lwcQuickActionWizard.js"
+            ],
             "c/recentAccounts": [
                 "recentAccounts/recentAccounts.js"
+            ],
+            "c/searchResult": [
+                "searchResult/searchResult.js"
             ],
             "c/weatherDataLWC": [
                 "weatherDataLWC/weatherDataLWC.js"
@@ -26,6 +32,9 @@
             ],
             "c/yearlyReviewModule": [
                 "yearlyReviewModule/yearlyReviewModule.js"
+            ],
+            "c/donationDistrubution": [
+                "donationDistrubution/donationDistrubution.js"
             ]
         }
     },

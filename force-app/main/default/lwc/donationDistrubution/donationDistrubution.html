@@ -1,0 +1,10 @@
+<template>
+    <lightning-layout class="slds-p-bottom_x-small">
+        <lightning-layout-item size="6">
+            <lightning-input type="text" name="donor" label="Donor" value={name} formatter="currency" readonly></lightning-input>
+        </lightning-layout-item>
+        <lightning-layout-item class="distribution" size="6">
+            <lightning-input type="number" name="amount" label="Amount to donate" value={donationAmount} formatter="currency" onchange={handleDonationInput}></lightning-input>
+        </lightning-layout-item>
+    </lightning-layout>
+</template>

@@ -1,0 +1,3 @@
+<aura:component implements="force:hasRecordId, force:lightningQuickAction">
+    <c:lwcQuickActionWizard recordid="{!v.recordId}" oncloseaction="{!c.handleEvent}"></c:lwcQuickActionWizard>
+</aura:component>	
